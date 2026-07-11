@@ -195,6 +195,56 @@ https://your-vercel-domain.vercel.app/api/auth/google/callback
 Because Vercel rewrites `/api/*` to the backend, the callback request still
 reaches the Docker backend.
 
+## Deploy Backend To Render
+
+The repository includes `render.yaml` for deploying the Docker backend on
+Render. Render supports Docker-based web services and persistent disks. The disk
+is mounted at `/data`, matching the Docker runtime paths used by the app.
+
+To deploy:
+
+1. Open Render and select **New** then **Blueprint**.
+2. Connect the GitHub repository `shimaawaheeb/DashboardProject`.
+3. Select the included `render.yaml`.
+4. Deploy the service.
+
+The Render service uses these persistent paths:
+
+```text
+/data/dashboard_auth.sqlite3
+/data/sample_data.xlsx
+/data/cleaned_data.xlsx
+```
+
+After deployment, Render gives the backend a public URL such as:
+
+```text
+https://dashboard-project-backend.onrender.com
+```
+
+Use that URL in `vercel.json` by replacing:
+
+```text
+https://replace-with-your-backend-url.example.com
+```
+
+If you want Gemini, Google sign-in, or Gmail OTP/password reset on Render, add
+the related environment variables in the Render dashboard:
+
+```dotenv
+GEMINI_API_KEY=your-key
+GEMINI_MODEL=gemini-3.5-flash
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+GOOGLE_REDIRECT_URI=https://your-vercel-domain.vercel.app/api/auth/google/callback
+GMAIL_USER=your-email@gmail.com
+GMAIL_APP_PASSWORD=your-gmail-app-password
+PASSWORD_RESET_BASE_URL=https://your-vercel-domain.vercel.app
+```
+
+Keep these values in Render environment settings only. Do not commit them to
+GitHub or bake them into the Docker image.
+
 ## Test
 
 Run the test suite with the project-local Python environment:

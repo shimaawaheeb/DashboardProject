@@ -18,4 +18,4 @@ ENV DEFAULT_ADMIN_EMAIL=employee1001@example.com
 EXPOSE 8000
 VOLUME ["/data"]
 
-CMD ["python3", "server.py", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "python3 server.py --host ${HOST:-0.0.0.0} --port ${PORT:-8000}"]
