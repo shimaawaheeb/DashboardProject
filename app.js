@@ -724,7 +724,7 @@ async function loadData() {
     if (window.location.protocol === "file:") {
       throw new Error("This dashboard cannot be opened as a file. Run start_dashboard.sh, then open the http:// address it displays.");
     }
-    const response = await fetch(`api/data?t=${Date.now()}`, { cache: "no-store" });
+    const response = await fetch(`/api/data?t=${Date.now()}`, { cache: "no-store" });
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.error || "Data request failed");
     state.data = payload;

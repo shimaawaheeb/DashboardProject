@@ -148,98 +148,51 @@ The log line looks like:
 Signup OTP for demo.admin: 123456
 ```
 
-## Deploy Frontend To Vercel
+## Deploy To Vercel
 
-Vercel should be used for the static frontend only. The Python dashboard backend
-should run from the Docker image on a container platform such as Render,
-Railway, Fly.io, DigitalOcean, or a VPS.
+The project is Vercel-compatible through `api/index.py`, which exports a
+`BaseHTTPRequestHandler`-compatible `handler`. Vercel serves the static frontend
+files normally and routes `/api/*` requests to that Python function.
 
-The included `vercel.json` serves the static frontend and rewrites `/api/*`
-requests to an external backend:
+Local development still uses `server.py` and `ThreadingHTTPServer`. Vercel does
+not call `server.py` or `serve_forever()`.
 
-```json
-{
-  "source": "/api/:path*",
-  "destination": "https://replace-with-your-backend-url.example.com/api/:path*"
-}
-```
-
-Before deploying to Vercel, replace:
-
-```text
-https://replace-with-your-backend-url.example.com
-```
-
-with the public URL of the running Docker backend.
-
-Example:
-
-```json
-"destination": "https://your-dashboard-backend.onrender.com/api/:path*"
-```
-
-Then import the GitHub repository into Vercel:
+To deploy:
 
 1. Open Vercel and select **Add New Project**.
 2. Import `shimaawaheeb/DashboardProject`.
 3. Use the default static deployment settings.
 4. Deploy.
 
-If the backend uses Google sign-in, configure the Google redirect URI to point
-at the Vercel frontend domain:
+Vercel uses:
 
 ```text
-https://your-vercel-domain.vercel.app/api/auth/google/callback
+index.html, app.js, styles.css, avatars/  -> static frontend
+api/index.py                              -> Python API function
+vercel.json                               -> routes /api/* to api/index.py
 ```
 
-Because Vercel rewrites `/api/*` to the backend, the callback request still
-reaches the Docker backend.
+The bundled `cleaned_data.xlsx` is included in the function bundle and is read
+by the API at runtime.
 
-## Deploy Backend To Render
+### Vercel Storage Limits
 
-The repository includes `render.yaml` for deploying the Docker backend on
-Render. The included blueprint is configured for free/demo-style deployment
-without a persistent disk.
-
-In this mode, Render stores runtime files under:
+Vercel serverless functions do not provide durable local file storage. In Vercel,
+runtime files are placed under:
 
 ```text
 /tmp/dashboard-data
 ```
 
-This is temporary storage. Accounts, sessions, admin edits, and workbook changes
-may reset when the service restarts or redeploys. Use this mode for a public
-demo, not production data persistence.
+This means local SQLite auth data, sessions, admin edits, and workbook changes
+are temporary and may reset after redeploys or function instance changes. This
+Vercel deployment is suitable for a public demo. For production persistence,
+replace local SQLite and Excel writes with managed storage such as PostgreSQL
+and object storage.
 
-To deploy:
+### Vercel Environment Variables
 
-1. Open Render and select **New** then **Blueprint**.
-2. Connect the GitHub repository `shimaawaheeb/DashboardProject`.
-3. Select the included `render.yaml`.
-4. Deploy the service.
-
-The Render demo service uses these temporary paths:
-
-```text
-/tmp/dashboard-data/dashboard_auth.sqlite3
-/tmp/dashboard-data/sample_data.xlsx
-/tmp/dashboard-data/cleaned_data.xlsx
-```
-
-After deployment, Render gives the backend a public URL such as:
-
-```text
-https://dashboard-project-backend.onrender.com
-```
-
-Use that URL in `vercel.json` by replacing:
-
-```text
-https://replace-with-your-backend-url.example.com
-```
-
-If you want Gemini, Google sign-in, or Gmail OTP/password reset on Render, add
-the related environment variables in the Render dashboard:
+Keep secrets in Vercel project environment variables, not in GitHub:
 
 ```dotenv
 GEMINI_API_KEY=your-key
@@ -250,10 +203,17 @@ GOOGLE_REDIRECT_URI=https://your-vercel-domain.vercel.app/api/auth/google/callba
 GMAIL_USER=your-email@gmail.com
 GMAIL_APP_PASSWORD=your-gmail-app-password
 PASSWORD_RESET_BASE_URL=https://your-vercel-domain.vercel.app
+DEFAULT_ADMIN_EMAIL=employee1001@example.com
 ```
 
-Keep these values in Render environment settings only. Do not commit them to
-GitHub or bake them into the Docker image.
+If Gmail settings are not configured, signup OTP and password reset links are
+printed in the Vercel function logs.
+
+## Optional Docker Backend Deployment
+
+The Docker image remains useful for local demos or container platforms. Docker
+supports persistent volumes, so it is a better fit than Vercel if you need local
+SQLite and Excel edits to persist without refactoring storage.
 
 ## Test
 

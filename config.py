@@ -7,7 +7,8 @@ import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-DATA_DIR = Path(os.getenv("DASHBOARD_DATA_DIR", ROOT)).expanduser()
+DEFAULT_DATA_DIR = Path("/tmp/dashboard-data") if os.getenv("VERCEL") else ROOT
+DATA_DIR = Path(os.getenv("DASHBOARD_DATA_DIR", str(DEFAULT_DATA_DIR))).expanduser()
 
 SAMPLE_WORKBOOK = Path(
     os.getenv("SAMPLE_WORKBOOK_PATH", str(DATA_DIR / "sample_data.xlsx"))

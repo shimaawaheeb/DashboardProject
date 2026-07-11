@@ -1,9 +1,14 @@
 {
   "cleanUrls": true,
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{.venv/**,__pycache__/**,test_*.py,*.backup-*.xlsx,dashboard_auth.sqlite3}"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://replace-with-your-backend-url.example.com/api/:path*"
+      "destination": "/api/index.py?path=:path*"
     },
     {
       "source": "/(.*)",
