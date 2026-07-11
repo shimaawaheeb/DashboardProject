@@ -148,6 +148,53 @@ The log line looks like:
 Signup OTP for demo.admin: 123456
 ```
 
+## Deploy Frontend To Vercel
+
+Vercel should be used for the static frontend only. The Python dashboard backend
+should run from the Docker image on a container platform such as Render,
+Railway, Fly.io, DigitalOcean, or a VPS.
+
+The included `vercel.json` serves the static frontend and rewrites `/api/*`
+requests to an external backend:
+
+```json
+{
+  "source": "/api/:path*",
+  "destination": "https://replace-with-your-backend-url.example.com/api/:path*"
+}
+```
+
+Before deploying to Vercel, replace:
+
+```text
+https://replace-with-your-backend-url.example.com
+```
+
+with the public URL of the running Docker backend.
+
+Example:
+
+```json
+"destination": "https://your-dashboard-backend.onrender.com/api/:path*"
+```
+
+Then import the GitHub repository into Vercel:
+
+1. Open Vercel and select **Add New Project**.
+2. Import `shimaawaheeb/DashboardProject`.
+3. Use the default static deployment settings.
+4. Deploy.
+
+If the backend uses Google sign-in, configure the Google redirect URI to point
+at the Vercel frontend domain:
+
+```text
+https://your-vercel-domain.vercel.app/api/auth/google/callback
+```
+
+Because Vercel rewrites `/api/*` to the backend, the callback request still
+reaches the Docker backend.
+
 ## Test
 
 Run the test suite with the project-local Python environment:
