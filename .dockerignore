@@ -1,0 +1,7 @@
+.env
+.venv
+__pycache__
+*.pyc
+dashboard_auth.sqlite3
+*.backup-*.xlsx
+.git
