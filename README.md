@@ -198,8 +198,18 @@ reaches the Docker backend.
 ## Deploy Backend To Render
 
 The repository includes `render.yaml` for deploying the Docker backend on
-Render. Render supports Docker-based web services and persistent disks. The disk
-is mounted at `/data`, matching the Docker runtime paths used by the app.
+Render. The included blueprint is configured for free/demo-style deployment
+without a persistent disk.
+
+In this mode, Render stores runtime files under:
+
+```text
+/tmp/dashboard-data
+```
+
+This is temporary storage. Accounts, sessions, admin edits, and workbook changes
+may reset when the service restarts or redeploys. Use this mode for a public
+demo, not production data persistence.
 
 To deploy:
 
@@ -208,12 +218,12 @@ To deploy:
 3. Select the included `render.yaml`.
 4. Deploy the service.
 
-The Render service uses these persistent paths:
+The Render demo service uses these temporary paths:
 
 ```text
-/data/dashboard_auth.sqlite3
-/data/sample_data.xlsx
-/data/cleaned_data.xlsx
+/tmp/dashboard-data/dashboard_auth.sqlite3
+/tmp/dashboard-data/sample_data.xlsx
+/tmp/dashboard-data/cleaned_data.xlsx
 ```
 
 After deployment, Render gives the backend a public URL such as:

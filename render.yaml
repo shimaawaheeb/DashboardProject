@@ -2,21 +2,16 @@ services:
   - type: web
     name: dashboard-project-backend
     runtime: docker
-    plan: starter
     region: oregon
     healthCheckPath: /
     envVars:
       - key: DASHBOARD_DATA_DIR
-        value: /data
+        value: /tmp/dashboard-data
       - key: AUTH_DB_PATH
-        value: /data/dashboard_auth.sqlite3
+        value: /tmp/dashboard-data/dashboard_auth.sqlite3
       - key: SAMPLE_WORKBOOK_PATH
-        value: /data/sample_data.xlsx
+        value: /tmp/dashboard-data/sample_data.xlsx
       - key: CLEANED_WORKBOOK_PATH
-        value: /data/cleaned_data.xlsx
+        value: /tmp/dashboard-data/cleaned_data.xlsx
       - key: DEFAULT_ADMIN_EMAIL
         value: employee1001@example.com
-    disk:
-      name: dashboard-data
-      mountPath: /data
-      sizeGB: 1
