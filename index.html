@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Enterprise Projects and Workforce dashboard">
+  <title>Enterprise Command Center</title>
+  <link rel="stylesheet" href="styles.css?v=dashboard-assistant-2">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">E</div>
+        <div><strong>Enterprise</strong><span>Command Center</span></div>
+      </div>
+      <nav aria-label="Dashboard pages">
+        <button class="nav-item active" data-page="overview"><span>◫</span>Portfolio overview</button>
+        <button class="nav-item" data-page="delivery"><span>✓</span>Project delivery</button>
+        <button class="nav-item" data-page="workforce"><span>♙</span>Workforce</button>
+        <button class="nav-item" data-page="governance"><span>⌁</span>Governance</button>
+      </nav>
+      <div class="sidebar-note">
+        <span class="live-dot"></span>
+        <div><strong>Excel connected</strong><small id="source-file">Loading source…</small></div>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Enterprise Projects &amp; Workforce</p>
+          <h1 id="page-title">Portfolio overview</h1>
+          <p id="page-subtitle">Executive view of delivery, investment, and portfolio health.</p>
+        </div>
+        <div class="top-actions">
+          <label class="select-wrap">Department
+            <select id="department-filter"><option value="All">All departments</option></select>
+          </label>
+          <button id="refresh-button" class="refresh-button"><span>↻</span> Refresh data</button>
+          <div id="auth-actions" class="auth-actions">
+            <button id="login-button" class="auth-button secondary" type="button">Login</button>
+            <button id="signup-button" class="auth-button primary" type="button">Sign up</button>
+            <div id="user-menu" class="user-menu hidden">
+              <button id="user-menu-button" class="user-menu-button" type="button"
+                aria-haspopup="menu" aria-expanded="false">
+                <img id="user-avatar" class="user-avatar" src="avatars/avatar-executive.svg" alt="">
+                <span id="auth-user" class="auth-user"></span>
+              </button>
+              <div id="user-menu-dropdown" class="user-menu-dropdown" role="menu" hidden>
+                <div class="user-menu-info">
+                  <img id="user-menu-avatar" class="user-menu-avatar" src="avatars/avatar-executive.svg" alt="">
+                  <div><strong id="user-menu-name"></strong><small id="user-menu-email"></small></div>
+                </div>
+                <button id="my-dashboard-button" class="menu-action neutral" type="button" role="menuitem">My dashboard</button>
+                <button id="admin-button" class="menu-action neutral hidden" type="button" role="menuitem">Admin</button>
+                <button id="settings-button" class="menu-action neutral" type="button" role="menuitem">Settings</button>
+                <button id="logout-button" class="menu-action danger" type="button" role="menuitem">Logout</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="context-bar" aria-label="Data context">
+        <span><b id="reporting-date">—</b> reporting date</span>
+        <span><b id="record-count">—</b> source records</span>
+        <span class="context-right" id="last-refresh">Preparing dashboard…</span>
+      </section>
+
+      <div id="alert" class="alert hidden" role="alert"></div>
+      <div id="dashboard-content" aria-live="polite"></div>
+    </main>
+  </div>
+  <button id="assistant-toggle" class="assistant-toggle" type="button"
+    aria-controls="assistant-panel" aria-expanded="false">
+    <span aria-hidden="true">✦</span> Dashboard Assistant
+  </button>
+  <aside id="assistant-panel" class="assistant-panel" aria-label="Dashboard Assistant"
+    aria-hidden="true" hidden>
+    <header class="assistant-header">
+      <div class="assistant-identity">
+        <span class="assistant-mark" aria-hidden="true">✦</span>
+        <div><strong>Dashboard Assistant</strong><small>Grounded in cleaned Excel data</small></div>
+      </div>
+      <button id="assistant-close" class="assistant-close" type="button"
+        aria-label="Close Dashboard Assistant">×</button>
+    </header>
+    <div id="assistant-messages" class="assistant-messages" aria-live="polite">
+      <article class="assistant-welcome">
+        <h2>Ask about this dashboard</h2>
+        <p>I answer only from the cleaned workbook and calculated dashboard KPIs.</p>
+        <div class="assistant-suggestions" aria-label="Suggested questions">
+          <button type="button">Summarize the portfolio health</button>
+          <button type="button">Which projects need the most attention?</button>
+          <button type="button">Which department has the most overdue tasks?</button>
+          <button type="button">What is the portfolio budget utilization?</button>
+        </div>
+      </article>
+    </div>
+    <div class="assistant-composer-wrap">
+      <form id="assistant-form" class="assistant-composer">
+        <label class="sr-only" for="assistant-input">Ask a dashboard question</label>
+        <textarea id="assistant-input" rows="1" maxlength="2000"
+          placeholder="Ask about projects, tasks, workforce…" required></textarea>
+        <button id="assistant-send" class="assistant-send" type="submit"
+          aria-label="Send message">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 12h15M13 6l6 6-6 6"></path>
+          </svg>
+        </button>
+      </form>
+      <p class="assistant-disclaimer">Answers are limited to dashboard data and KPIs.</p>
+    </div>
+  </aside>
+  <div id="assistant-backdrop" class="assistant-backdrop" hidden></div>
+  <div id="auth-backdrop" class="auth-backdrop" hidden></div>
+  <section id="auth-modal" class="auth-modal" aria-modal="true" role="dialog"
+    aria-labelledby="auth-title" aria-hidden="true" hidden>
+    <header class="auth-modal-header">
+      <div>
+        <h2 id="auth-title">Login</h2>
+        <p id="auth-subtitle">Welcome! Please sign in to continue.</p>
+      </div>
+      <button id="auth-close" class="auth-close" type="button" aria-label="Close">×</button>
+    </header>
+
+    <div id="auth-message" class="auth-message hidden" role="status"></div>
+
+    <form id="login-form" class="auth-form">
+      <label>Username or email
+        <input id="login-identifier" name="identifier" autocomplete="username" required>
+      </label>
+      <label>Password
+        <span class="password-wrap">
+          <input id="login-password" name="password" type="password"
+            autocomplete="current-password" required>
+          <button class="password-toggle" type="button" aria-label="Show password"
+            data-target="login-password">👁</button>
+        </span>
+      </label>
+      <button id="forgot-password-link" class="auth-link" type="button">Forgot password?</button>
+      <button class="auth-submit" type="submit">Login</button>
+      <button class="google-placeholder" type="button">
+        <span aria-hidden="true">G</span> Continue with Google
+      </button>
+      <p class="auth-switch">Don’t have an account?
+        <button id="show-signup-link" type="button">Sign up</button>
+      </p>
+    </form>
+
+    <form id="signup-form" class="auth-form hidden" novalidate>
+      <label data-required-field>
+        <span class="field-label-text">Username <span class="required-mark">*</span></span>
+        <input id="signup-user-name" name="signupUserName" autocomplete="off"
+          autocapitalize="none" spellcheck="false" required>
+      </label>
+      <label data-required-field>
+        <span class="field-label-text">Email <span class="required-mark">*</span></span>
+        <input id="signup-email" name="email" type="email" autocomplete="email" required>
+      </label>
+      <label data-required-field>
+        <span class="field-label-text">Password <span class="required-mark">*</span></span>
+        <span class="password-wrap">
+          <input id="signup-password" name="password" type="password"
+            autocomplete="new-password" required>
+          <button class="password-toggle" type="button" aria-label="Show password"
+            data-target="signup-password">👁</button>
+        </span>
+      </label>
+      <label data-required-field>
+        <span class="field-label-text">Confirm password <span class="required-mark">*</span></span>
+        <span class="password-wrap">
+          <input id="signup-confirm-password" name="confirmPassword" type="password"
+            autocomplete="new-password" required>
+          <button class="password-toggle" type="button" aria-label="Show password"
+            data-target="signup-confirm-password">👁</button>
+        </span>
+      </label>
+      <div id="signup-required-summary" class="required-summary hidden">
+        Please fill in the required fields marked *.
+      </div>
+      <fieldset class="avatar-fieldset">
+        <legend>Avatar <span>Optional</span></legend>
+        <div id="avatar-grid" class="avatar-grid"></div>
+      </fieldset>
+      <button class="auth-submit" type="submit">Sign up</button>
+      <button class="google-placeholder" type="button">
+        <span aria-hidden="true">G</span> Continue with Google
+      </button>
+      <p class="auth-switch">Already have an account?
+        <button id="show-login-link" type="button">Log in</button>
+      </p>
+    </form>
+
+    <form id="signup-otp-form" class="auth-form hidden">
+      <label>Email
+        <input id="signup-otp-email" name="email" type="email" autocomplete="email" readonly required>
+      </label>
+      <fieldset class="otp-fieldset">
+        <legend>Verification code</legend>
+        <div class="otp-inputs" aria-label="Six digit verification code">
+          <input class="otp-box" inputmode="numeric" pattern="[0-9]" maxlength="1" autocomplete="one-time-code">
+          <input class="otp-box" inputmode="numeric" pattern="[0-9]" maxlength="1">
+          <input class="otp-box" inputmode="numeric" pattern="[0-9]" maxlength="1">
+          <input class="otp-box" inputmode="numeric" pattern="[0-9]" maxlength="1">
+          <input class="otp-box" inputmode="numeric" pattern="[0-9]" maxlength="1">
+          <input class="otp-box" inputmode="numeric" pattern="[0-9]" maxlength="1">
+        </div>
+        <input id="signup-otp-code" name="otp" type="hidden" required>
+      </fieldset>
+      <button class="auth-submit" type="submit">Verify and continue</button>
+      <p class="auth-switch">Need to change details?
+        <button id="otp-signup-link" type="button">Back to sign up</button>
+      </p>
+    </form>
+
+    <form id="forgot-form" class="auth-form hidden">
+      <label>Username or email
+        <input id="forgot-identifier" name="identifier" autocomplete="username" required>
+      </label>
+      <button class="auth-submit" type="submit">Send reset email</button>
+      <p class="auth-switch">Remembered your password?
+        <button id="forgot-login-link" type="button">Log in</button>
+      </p>
+    </form>
+
+    <form id="reset-form" class="auth-form hidden">
+      <label>New password
+        <span class="password-wrap">
+          <input id="reset-password" name="password" type="password"
+            autocomplete="new-password" required>
+          <button class="password-toggle" type="button" aria-label="Show password"
+            data-target="reset-password">👁</button>
+        </span>
+      </label>
+      <label>Confirm new password
+        <span class="password-wrap">
+          <input id="reset-confirm-password" name="confirmPassword" type="password"
+            autocomplete="new-password" required>
+          <button class="password-toggle" type="button" aria-label="Show password"
+            data-target="reset-confirm-password">👁</button>
+        </span>
+      </label>
+      <button class="auth-submit" type="submit">Update password</button>
+    </form>
+  </section>
+  <script src="app.js?v=dashboard-assistant-2"></script>
+</body>
+</html>
