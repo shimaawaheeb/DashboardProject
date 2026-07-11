@@ -18,8 +18,10 @@ from collections.abc import Iterator
 
 import bcrypt
 
+from config import AUTH_DB, configured_admin_emails
+
 ROOT = Path(__file__).resolve().parent
-DEFAULT_DB = ROOT / "dashboard_auth.sqlite3"
+DEFAULT_DB = AUTH_DB
 SESSION_COOKIE = "dashboard_session"
 USERNAME_RE = re.compile(r"^[A-Za-z0-9_.-]{3,32}$")
 EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
@@ -30,7 +32,7 @@ RESET_MINUTES = 30
 SIGNUP_OTP_MINUTES = 10
 OAUTH_STATE_MINUTES = 10
 DEFAULT_AVATAR = "avatar-executive"
-DEFAULT_ADMIN_EMAILS = {"swaheeb0001@stu.kau.edu.sa"}
+DEFAULT_ADMIN_EMAILS = configured_admin_emails()
 
 
 class AuthError(ValueError):

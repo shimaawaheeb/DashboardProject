@@ -26,9 +26,11 @@ from admin_data import (
 )
 from assistant import DashboardAssistant, GeminiError
 from auth import AuthError, AuthStore, SESSION_COOKIE
+from config import CLEANED_WORKBOOK, ensure_runtime_files
 
 ROOT = Path(__file__).resolve().parent
-WORKBOOK = ROOT / "cleaned_data.xlsx"
+ensure_runtime_files()
+WORKBOOK = CLEANED_WORKBOOK
 DEFAULT_PORT = 8000
 EMPLOYEE_SIGNUP_ERROR = (
     "Sorry, you can not sign up because this email is not registered as a "

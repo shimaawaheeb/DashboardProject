@@ -66,6 +66,55 @@ For a non-reloading run:
 Do not open `index.html` directly. Browsers block local HTML files from reading
 local workbook files, so the dashboard must be served by `server.py`.
 
+## Run With Docker
+
+The published Docker image includes the application code and anonymized demo
+workbooks. Runtime data is stored outside the image in `/data` so accounts and
+admin workbook changes can persist across container restarts.
+
+Create a named Docker volume:
+
+```bash
+docker volume create dashboard-data
+```
+
+Run the image:
+
+```bash
+docker run -p 8000:8000 \
+  --env-file .env \
+  -v dashboard-data:/data \
+  shimaawaheeb/dashboard-project:latest
+```
+
+Open:
+
+```text
+http://127.0.0.1:8000
+```
+
+On first run, the container copies the bundled demo workbooks into `/data` if
+they are missing. After that, `/data` holds:
+
+```text
+/data/dashboard_auth.sqlite3
+/data/sample_data.xlsx
+/data/cleaned_data.xlsx
+```
+
+Useful Docker environment variables:
+
+```dotenv
+DASHBOARD_DATA_DIR=/data
+AUTH_DB_PATH=/data/dashboard_auth.sqlite3
+SAMPLE_WORKBOOK_PATH=/data/sample_data.xlsx
+CLEANED_WORKBOOK_PATH=/data/cleaned_data.xlsx
+DEFAULT_ADMIN_EMAIL=employee1001@example.com
+```
+
+`DEFAULT_ADMIN_EMAIL` may contain one email or a comma-separated list. When a
+user with one of those emails signs up, the account is granted admin access.
+
 ## Test
 
 Run the test suite with the project-local Python environment:
@@ -91,6 +140,9 @@ The dashboard uses `cleaned_data.xlsx` for reporting. To refresh the data:
 The server reloads workbook data on each refresh request. A server restart is
 not required after workbook changes.
 
+For Docker runs, update the workbook files in the mounted `/data` volume or
+mount your own files to the configured workbook paths.
+
 ## Admin Page
 
 The admin page allows authorized users to manage workbook data from the browser.
@@ -110,6 +162,10 @@ the dashboard can immediately use the updated data.
 
 The dashboard supports local account signup/login and Google sign-in. Signup is
 restricted to emails that exist in the Employees sheet of the cleaned workbook.
+
+For a fresh Docker volume, no users exist yet. Sign up with an email in the
+Employees sheet. By default, `employee1001@example.com` is the initial admin
+email for the public demo workbook.
 
 Google sign-in requires these values in the git-ignored `.env` file:
 

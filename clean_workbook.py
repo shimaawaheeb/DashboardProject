@@ -9,10 +9,12 @@ from xml.etree import ElementTree as ET
 from xml.sax.saxutils import escape
 from zipfile import ZIP_DEFLATED, ZipFile
 
+from config import CLEANED_WORKBOOK, SAMPLE_WORKBOOK, TEMP_CLEANED_WORKBOOK
+
 ROOT = Path(__file__).resolve().parent
-SOURCE = ROOT / "sample_data.xlsx"
-OUTPUT = ROOT / "cleaned_data.xlsx"
-TEMP_OUTPUT = ROOT / "cleaned_data.tmp.xlsx"
+SOURCE = SAMPLE_WORKBOOK
+OUTPUT = CLEANED_WORKBOOK
+TEMP_OUTPUT = TEMP_CLEANED_WORKBOOK
 
 MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"

@@ -264,11 +264,11 @@ class AuthStoreTests(unittest.TestCase):
 
     def test_default_admin_email_gets_admin_role(self) -> None:
         user = self.store.create_user(
-            "sanaa",
-            "swaheeb0001@stu.kau.edu.sa",
+            "demo.admin",
+            "employee1001@example.com",
             "StrongPass123",
             "StrongPass123",
-            "Sanaa Waheeb",
+            "Demo Admin",
             "avatar-it",
         )
         self.assertTrue(user.is_admin)

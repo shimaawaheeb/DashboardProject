@@ -5,3 +5,4 @@ __pycache__
 dashboard_auth.sqlite3
 *.backup-*.xlsx
 .git
+cleaned_data.tmp.xlsx

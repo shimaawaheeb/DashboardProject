@@ -10,6 +10,7 @@ from xml.sax.saxutils import escape
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import clean_workbook
+from config import SAMPLE_WORKBOOK
 
 try:
     from openpyxl import load_workbook
@@ -17,7 +18,7 @@ except ImportError:  # pragma: no cover - dependency checked at runtime
     load_workbook = None
 
 ROOT = Path(__file__).resolve().parent
-SOURCE = ROOT / "sample_data.xlsx"
+SOURCE = SAMPLE_WORKBOOK
 
 MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
