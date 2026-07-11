@@ -115,6 +115,39 @@ DEFAULT_ADMIN_EMAIL=employee1001@example.com
 `DEFAULT_ADMIN_EMAIL` may contain one email or a comma-separated list. When a
 user with one of those emails signs up, the account is granted admin access.
 
+### Demo Signup
+
+The public Docker image uses anonymized employee data. It does not include any
+pre-created user accounts or passwords.
+
+To try the demo:
+
+1. Open `http://127.0.0.1:8000`.
+2. Select **Sign up**.
+3. Use this demo employee email:
+
+   ```text
+   employee1001@example.com
+   ```
+
+4. Choose any valid username and password.
+
+`employee1001@example.com` is the default admin email for the demo image. After
+the account is created, it receives admin access.
+
+If Gmail settings are not configured in `.env`, the signup OTP is printed in the
+container logs instead of being sent by email:
+
+```bash
+docker logs <container-name>
+```
+
+The log line looks like:
+
+```text
+Signup OTP for demo.admin: 123456
+```
+
 ## Test
 
 Run the test suite with the project-local Python environment:
